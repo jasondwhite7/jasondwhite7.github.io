@@ -11,7 +11,6 @@ export function Projects() {
       <p className="section-label reveal">Work</p>
       <h2 className="reveal">Highlighted Projects</h2>
       <p className="section-subtitle reveal">
-        Real missions. Real stakes. Real interfaces.
       </p>
 
       <div className="projects-grid">

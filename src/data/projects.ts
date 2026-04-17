@@ -5,6 +5,7 @@ export interface Project {
   org: string
   desc: string
   highlights: string[]
+  thumbnail: string
   tags: string[]
   images: string[]
   video?: string
@@ -13,55 +14,53 @@ export interface Project {
 export const projects: Record<string, Project> = {
   suits: {
     id: 'suits',
-    number: '01 · NASA SUITS Challenge',
+    number: '01 · SEARCH @ Purdue',
     title: 'Wrist-Mounted EVA Display',
-    org: 'SEARCH · Purdue University',
-    desc: 'Designed and built the frontend for a wrist-mounted display worn by astronauts during EVA operations. The interface surfaces real-time telemetry, navigation, and mission data under the constraints of a spacesuit — gloved hands, helmet visibility, and zero room for error.',
+    org: 'NASA SUITS · Team VISOR',
+    desc: 'Designed and built the frontend for a wrist-mounted display worn by astronauts during EVA operations. The interface shows real-time telemetry, navigation, and mission data and is integrated with a HoloLens 2 and a custom astronaut assistant LLM for additional accessibility.',
     highlights: [
-      'Built a WebSocket data pipeline connecting the wrist device to a live telemetry server',
-      'Designed tab/sub-tab navigation for rapid data access with gloved hands and large tap targets',
-      'Integrated with HoloLens 2 for mixed reality EVA operations alongside a Raspberry Pi',
-      'Selected as the only freshman to represent Purdue at Johnson Space Center',
+      'Designed the UI for a wrist-mounted device for use with astronaut gloves and lunar lighting conditions',
+      'Integrated with HoloLens 2 for augmented reality EVA operations alongside a Raspberry Pi',
+      'Selected as only one of two freshman to represent Purdue at Johnson Space Center',
       'Elected Software Lead for the 2026-2027 SUITS team',
       '1 of 10 colleges selected nationally via competitive technical proposal',
     ],
+    thumbnail: '',
     tags: [
       'Unity / C#',
       'HoloLens 2',
-      'WebSocket',
-      'Raspberry Pi',
-      'EVA UI/UX',
-      'Real-time Telemetry',
+      'Integration',
     ],
-    images: ['/suits-1.jpg', '/suits-2.jpg'],
+    images: ['/'],
   },
   crew: {
     id: 'crew',
     number: '02 · SEARCH @ Purdue',
     title: 'Crew Operations Interface',
-    org: 'ASTRO-USA Analog Habitat',
-    desc: 'Led the control systems subteam responsible for transforming ASTRO-USA — an analog space habitat — into a fully functional mission simulator. Designed the system and network architecture, habitat displays, and caution & warning systems, and planned the initial Mission Operations Control Room.',
+    org: 'ASTRO-USA · Analog Astronaut Habitat',
+    desc: 'Led the Crew Operations subteam responsible for designing and implementing the control systems for ASTRO-USA. Responsible for the network architecture, habitat displays, data uploading and processing, and caution & warning systems. ',
     highlights: [
       'Designed network architecture to support continuous data collection and real-time monitoring',
-      'Built caution & warning systems to aid astronauts during simulated missions',
+      'Implemented an SQLite database to store telemetry data for historical visualization and analysis',
       'Developed habitat display UI for mission-critical information across all systems',
       'Planned the initial layout and workflow of the Mission Operations Control Room (MOCR)',
       'Led a subteam responsible for all control systems within the habitat',
     ],
+    thumbnail: '/crew-1-thumb.jpg',
     tags: [
-      'Systems Architecture',
-      'UI Design',
-      'C&W Systems',
-      'Real-time Data',
-      'Network Design',
+      'TypeScript React',
+      'SQLite',
+      'Integration',
+      'Arduino',
+      'Network Architecture',
     ],
     images: ['/crew-1.jpg'],
   },
   adc: {
     id: 'adc',
-    number: '03 · NASA App Development Challenge',
+    number: '03 · NASA ADC @ DHHS',
     title: 'Artemis II Simulator',
-    org: 'NASA · Johnson Space Center',
+    org: 'NASA App Development Challenge',
     desc: 'Led a team of 5 to design, program, and develop an interactive application simulating the Artemis II mission using a real NASA dataset. Visualized Orion trajectory and built an antenna optimization algorithm. Presented internationally at JSC.',
     highlights: [
       'Visualized Orion trajectory data as a color-coded flight path for rapid data interpretation',
@@ -71,14 +70,15 @@ export const projects: Record<string, Project> = {
       'Presented at Johnson Space Center to NASA workforce, leadership, and the public',
       '1 of 4 teams selected internationally to present at JSC',
     ],
+    thumbnail: '/adc-1-thumb.jpg',
     tags: [
-      'Python',
+      'Unity / C#',
       'Data Analysis',
-      'Algorithm Design',
       'Best UI Award',
+      'Data Smoothing',
       'Trajectory Visualization',
     ],
-    images: ['/adc-1.jpg', '/adc-2.jpg'],
+    images: ['/adc-1.jpg', '/adc-2.jpg', '/adc-3.jpg'],
     video: 'https://www.youtube.com/watch?v=kYOU_ufs9sI',
   },
 }

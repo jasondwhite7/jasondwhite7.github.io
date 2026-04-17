@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-export function Carousel({ images, inModal = false }: { images: string[], inModal?: boolean }) {
+export function Carousel({ images, inModal = false, isThumbnail = false }: { images: string[], inModal?: boolean, isThumbnail?: boolean }) {
   const [index, setIndex] = useState(0)
 
   // Reset index when images prop changes (useful for modals)
@@ -28,14 +28,23 @@ export function Carousel({ images, inModal = false }: { images: string[], inModa
 
   return (
     <div className="carousel">
-      {images.map((src, i) => (
-        <img
-          key={`${src}-${i}`}
-          className={`carousel-img ${i === index ? 'active' : ''}`}
-          src={src}
-          alt={`Image ${i + 1}`}
-        />
-      ))}
+      {images.map((src, i) => {
+        const targetSrc = isThumbnail ? src.replace('.jpg', '-thumb.jpg') : src;
+        return (
+          <img
+            key={`${src}-${i}`}
+            className={`carousel-img ${i === index ? 'active' : ''}`}
+            src={targetSrc}
+            onError={(e) => {
+              if (isThumbnail && e.currentTarget.src !== window.location.origin + src) {
+                e.currentTarget.src = src;
+              }
+            }}
+            alt={`Image ${i + 1}`}
+            loading="lazy"
+          />
+        )
+      })}
       {images.length > 1 && (
         <>
           <button

@@ -3,6 +3,8 @@ import { Cursor } from './components/Cursor'
 import { Background } from './components/Background'
 import { Nav } from './components/Nav'
 import { Hero } from './components/Hero'
+import { About } from './components/About'
+import { Experience } from './components/Experience'
 import { Divider } from './components/Divider'
 import { Projects } from './components/Projects'
 import { Awards } from './components/Awards'
@@ -23,6 +25,10 @@ function App() {
       <div className="content">
         <Nav />
         <Hero />
+        <Divider />
+        <About />
+        <Divider />
+        <Experience />
         <Divider />
         <Projects />
         <Divider />

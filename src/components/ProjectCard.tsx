@@ -10,8 +10,10 @@ interface Props {
 export function ProjectCard({ project, onClick }: Props) {
   return (
     <div className="project-card reveal" onClick={onClick}>
-      <div className="project-thumbnail">
-        <Carousel images={project.images} />
+      <div className="project-card-inner">
+        <div className="project-thumbnail">
+          <Carousel images={project.images} isThumbnail={true} />
+        </div>
         <div className="project-thumb-overlay">
           <span>↗</span> View Project
         </div>
