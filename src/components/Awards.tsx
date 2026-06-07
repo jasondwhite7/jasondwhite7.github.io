@@ -3,9 +3,7 @@ import React from 'react'
 export function Awards() {
   return (
     <section id="awards">
-      <p className="section-label reveal">Recognition</p>
       <h2 className="reveal">Awards & Honors</h2>
-      <p className="section-subtitle reveal"></p>
 
       <div className="awards-grid">
         <div className="award-card reveal">

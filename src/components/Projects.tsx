@@ -8,10 +8,7 @@ export function Projects() {
 
   return (
     <section id="projects">
-      <p className="section-label reveal">Work</p>
       <h2 className="reveal">Highlighted Projects</h2>
-      <p className="section-subtitle reveal">
-      </p>
 
       <div className="projects-grid">
         {projectsList.map((p) => (

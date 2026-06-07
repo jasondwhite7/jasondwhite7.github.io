@@ -1,12 +1,10 @@
 export function Experience() {
   return (
     <section id="experience">
-      <p className="section-label reveal">Journey</p>
       <h2 className="reveal">Experience</h2>
-      <p className="section-subtitle reveal"></p>
 
       <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
-        
+
         <div className="reveal" style={{ display: 'flex', gap: '24px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }} />
@@ -24,15 +22,30 @@ export function Experience() {
 
         <div className="reveal" style={{ display: 'flex', gap: '24px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid var(--accent)', background: 'var(--bg)' }} />
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }} />
             <div style={{ width: '1px', flex: 1, background: 'var(--border)', margin: '8px 0' }} />
           </div>
           <div style={{ paddingBottom: '20px' }}>
             <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--text)' }}>Crew Operations Lead</h3>
-            <p style={{ fontFamily: '"Space Mono", monospace', fontSize: '0.8rem', color: 'var(--accent)', marginBottom: '12px', letterSpacing: '0.05em' }}>ASTRO-USA Analog Habitat · 2025 - 2026</p>
+            <p style={{ fontFamily: '"Space Mono", monospace', fontSize: '0.8rem', color: 'var(--accent)', marginBottom: '12px', letterSpacing: '0.05em' }}>ASTRO-USA Analog Habitat · 2025 - Present</p>
             <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '600px' }}>
-              Selected to lead the Crew Operations subteam of SEARCH's analog astronaut habitat. Responsible for developing the 
+              Selected to lead the Crew Operations subteam of SEARCH's analog astronaut habitat. Responsible for developing the
               data monitoring and control systems for the habitat, as well as integrating existing systems into the software.
+            </p>
+          </div>
+        </div>
+
+        <div className="reveal" style={{ display: 'flex', gap: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid var(--accent)', background: 'var(--bg)' }} />
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--text)' }}>Wrist Mounted Device Interface Developer</h3>
+            <p style={{ fontFamily: '"Space Mono", monospace', fontSize: '0.8rem', color: 'var(--accent)', marginBottom: '12px', letterSpacing: '0.05em' }}>NASA SUITS Challenge · 2024 - 2025</p>
+            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '600px' }}>
+              Designed and created the user interface for the wrist mounted device that would be worn by astronauts during EVAs.
+              Controlled by a raspberry pi and connected to a hololens 2, it was used to display mission information and control
+              the head mounted display.
             </p>
           </div>
         </div>

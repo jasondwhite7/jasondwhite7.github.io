@@ -4,16 +4,12 @@ export function Contact() {
   return (
     <section id="contact">
       <div className="contact-wrapper">
-        <p className="section-label reveal" style={{ justifyContent: 'center' }}>
-          Contact
-        </p>
         <h2 className="reveal">Let's Connect</h2>
         <p
           className="section-subtitle reveal"
           style={{ margin: '0 auto 0', textAlign: 'center' }}
         >
-          Currently studying at Purdue and building for space. Always open to
-          interesting conversations.
+          Currently studying at Purdue and building for space. Always open to conversations.
         </p>
 
         <div className="contact-links reveal">

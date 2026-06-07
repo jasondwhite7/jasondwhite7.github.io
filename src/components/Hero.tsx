@@ -12,7 +12,7 @@ export function Hero() {
           <span className="last">White</span>
         </h1>
         <p className="hero-sub" style={{ pointerEvents: 'auto' }}>
-          Building interfaces for <span>space operations</span>. Freshman. 4.0
+          Building interfaces and systems for <span>space operations</span>. Sophomore. 3.97
           GPA. Already presenting at Johnson Space Center.
         </p>
         <div className="hero-badges" style={{ pointerEvents: 'auto' }}>
@@ -41,4 +41,3 @@ export function Hero() {
     </div>
   )
 }
-

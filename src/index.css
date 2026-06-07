@@ -74,37 +74,50 @@ body {
   pointer-events: none;
 }
 
-/* Nebula blobs */
+/* Nebula blobs — using radial gradients instead of filter:blur for zero GPU cost */
 .nebula {
   position: fixed;
   border-radius: 50%;
-  filter: blur(120px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.18;
 }
 .nebula-1 {
-  width: 600px;
-  height: 600px;
-  background: #1a3a6b;
-  top: -100px;
-  right: -100px;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(
+    circle,
+    rgba(26, 58, 107, 0.18) 0%,
+    rgba(26, 58, 107, 0.06) 40%,
+    transparent 70%
+  );
+  top: -200px;
+  right: -200px;
   animation: drift 20s ease-in-out infinite alternate;
 }
 .nebula-2 {
-  width: 500px;
-  height: 500px;
-  background: #2d1b69;
-  bottom: 10%;
-  left: -150px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(
+    circle,
+    rgba(45, 27, 105, 0.18) 0%,
+    rgba(45, 27, 105, 0.06) 40%,
+    transparent 70%
+  );
+  bottom: 5%;
+  left: -250px;
   animation: drift 25s ease-in-out infinite alternate-reverse;
 }
 .nebula-3 {
-  width: 400px;
-  height: 400px;
-  background: #0c3356;
-  top: 40%;
-  right: 20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(12, 51, 86, 0.18) 0%,
+    rgba(12, 51, 86, 0.06) 40%,
+    transparent 70%
+  );
+  top: 38%;
+  right: 18%;
   animation: drift 18s ease-in-out infinite alternate;
 }
 
@@ -800,7 +813,7 @@ h2 {
 .skill-group-label {
   font-family: "Space Mono", monospace;
   font-size: 0.65rem;
-  color: var(--accent2);
+  color: var(--accent);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 16px;

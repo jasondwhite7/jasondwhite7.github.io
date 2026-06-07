@@ -3,9 +3,9 @@ import React from 'react'
 export function Footer() {
   return (
     <footer>
-      <p>© 2026 Jason D. White</p>
+      <p></p>
       <p className="footer-gpa">
-        Purdue University · <span>4.0 GPA</span> · Aerospace Engineering
+        Purdue University · <span>3.97 GPA</span> · Aerospace Engineering
       </p>
     </footer>
   )

@@ -10,6 +10,7 @@ export function Cursor() {
       ringX = 0,
       ringY = 0
     let animationFrameId: number
+    let isAnimating = false
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX
@@ -18,11 +19,29 @@ export function Cursor() {
         cursorRef.current.style.left = mouseX + 'px'
         cursorRef.current.style.top = mouseY + 'px'
       }
+      if (!isAnimating) {
+        isAnimating = true
+        animateRing()
+      }
     }
 
     const animateRing = () => {
-      ringX += (mouseX - ringX) * 0.12
-      ringY += (mouseY - ringY) * 0.12
+      const dx = mouseX - ringX
+      const dy = mouseY - ringY
+
+      if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+        ringX = mouseX
+        ringY = mouseY
+        if (ringRef.current) {
+          ringRef.current.style.left = ringX + 'px'
+          ringRef.current.style.top = ringY + 'px'
+        }
+        isAnimating = false
+        return
+      }
+
+      ringX += dx * 0.12
+      ringY += dy * 0.12
       if (ringRef.current) {
         ringRef.current.style.left = ringX + 'px'
         ringRef.current.style.top = ringY + 'px'
@@ -58,8 +77,6 @@ export function Cursor() {
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseover', handleMouseOver)
     document.addEventListener('mouseout', handleMouseOut)
-    
-    animateRing()
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)

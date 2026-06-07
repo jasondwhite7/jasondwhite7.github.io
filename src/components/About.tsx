@@ -1,7 +1,6 @@
 export function About() {
   return (
     <section id="about" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
-      <p className="section-label reveal">Identity</p>
       <h2 className="reveal">About Me</h2>
       <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '40px', marginTop: '40px' }}>
         <div>

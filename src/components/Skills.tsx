@@ -3,9 +3,7 @@ import React from 'react'
 export function Skills() {
   return (
     <section id="skills">
-      <p className="section-label reveal">Toolkit</p>
       <h2 className="reveal">Skills</h2>
-      <p className="section-subtitle reveal">What I build with.</p>
 
       <div className="skills-container">
         <div className="skill-group reveal">

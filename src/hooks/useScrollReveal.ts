@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 export function useScrollReveal() {
   useEffect(() => {
     const reveals = document.querySelectorAll('.reveal')
-    
+
     // We add a slight delay based on the index to create a staggered effect
     let intersectionCount = 0
     let intersectionTimeout: number | undefined
@@ -15,11 +15,11 @@ export function useScrollReveal() {
             // Apply a staggered delay for batch intersections
             const delay = intersectionCount * 60
             intersectionCount++
-            
+
             setTimeout(() => {
               entry.target.classList.add('visible')
             }, delay)
-            
+
             observer.unobserve(entry.target)
           }
         })
