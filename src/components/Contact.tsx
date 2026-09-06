@@ -24,6 +24,7 @@ export function Contact() {
             </svg>
             whit1199@purdue.edu
           </a>
+          
           <a
             href="https://linkedin.com/in/jason-dwhite/"
             target="_blank"

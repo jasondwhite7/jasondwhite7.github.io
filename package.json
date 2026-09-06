@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/optimize.js",
     "dev": "vite",
-    "prebuild": "node scripts/optimize.js",
     "build": "tsc && vite build",
+    "optimize": "node scripts/optimize.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

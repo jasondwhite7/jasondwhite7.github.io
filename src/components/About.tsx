@@ -5,7 +5,7 @@ export function About() {
       <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '40px', marginTop: '40px' }}>
         <div>
           <p style={{ color: 'var(--muted)', fontSize: '1.05rem', lineHeight: 1.8, marginBottom: '20px' }}>
-            I am a first-year Aerospace Engineering student at Purdue University with a focus on human factors 
+            I am an Aerospace Engineering student at Purdue University (Expected Dec. 2028 · 3.97 GPA) with a focus on human factors 
             and designing systems that support long-duration human presence in space. My long-term goal is to 
             contribute to the sustainability and safety of human space exploration.
           </p>

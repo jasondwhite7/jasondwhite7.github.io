@@ -1,61 +1,54 @@
-import { useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 
-// Icosahedron vertices using golden ratio
-const PHI = (1 + Math.sqrt(5)) / 2
-const BASE_VERTS: [number, number, number][] = [
-  [-1,  PHI, 0], [ 1,  PHI, 0], [-1, -PHI, 0], [ 1, -PHI, 0],
-  [0, -1,  PHI], [0,  1,  PHI], [0, -1, -PHI], [0,  1, -PHI],
-  [ PHI, 0, -1], [ PHI, 0,  1], [-PHI, 0, -1], [-PHI, 0,  1],
+// Latitudes (in degrees) to draw parallels
+const LATS = [-60, -45, -30, -15, 0, 15, 30, 45, 60]
+// Longitudes (in degrees) to draw meridians (every 30 degrees)
+const LONS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+
+// 3 Satellites in distinct orbital planes
+interface SatelliteConfig {
+  id: string
+  orbitRadiusFactor: number // multiplier of globe radius
+  speed: number             // orbital velocity
+  inclination: number       // orbital tilt (radians)
+  raan: number              // longitude of ascending node (radians)
+  color: string             // beacon color
+  size: number              // beacon radius (px)
+  initialPhase: number      // starting position along orbit
+}
+
+const SATELLITES: SatelliteConfig[] = [
+  {
+    id: 'sat-1',
+    orbitRadiusFactor: 1.25, // Low inclined orbit
+    speed: 0.9,
+    inclination: 0.5,
+    raan: 0.4,
+    color: '#7eb8f7',
+    size: 2.2,
+    initialPhase: 0.8,
+  },
+  {
+    id: 'sat-2',
+    orbitRadiusFactor: 1.45, // Polar / Earth observation orbit
+    speed: 0.65,
+    inclination: 1.4,
+    raan: 2.2,
+    color: '#38bdf8',
+    size: 2.5,
+    initialPhase: 2.5,
+  },
+  {
+    id: 'sat-3',
+    orbitRadiusFactor: 1.65, // Higher inclined orbit
+    speed: 0.45,
+    inclination: 0.85,
+    raan: 4.5,
+    color: '#a78bfa',
+    size: 2.0,
+    initialPhase: 4.2,
+  },
 ]
-
-// Normalize to unit sphere then scale
-const RADIUS = 2
-const VERTS = BASE_VERTS.map(([x, y, z]) => {
-  const len = Math.sqrt(x * x + y * y + z * z)
-  return [x / len * RADIUS, y / len * RADIUS, z / len * RADIUS] as [number, number, number]
-})
-
-// Icosahedron edges (vertex index pairs)
-const EDGES: [number, number][] = [
-  [0,1],[0,5],[0,7],[0,10],[0,11],
-  [1,5],[1,7],[1,8],[1,9],
-  [2,3],[2,4],[2,6],[2,10],[2,11],
-  [3,4],[3,6],[3,8],[3,9],
-  [4,5],[4,9],[4,11],
-  [5,9],[5,11],
-  [6,7],[6,8],[6,10],
-  [7,8],[7,10],
-  [8,9],
-  [10,11],
-]
-
-// Orbit ring: generate points on a circle
-function makeRing(radius: number, segments: number): [number, number, number][] {
-  const pts: [number, number, number][] = []
-  for (let i = 0; i <= segments; i++) {
-    const a = (i / segments) * Math.PI * 2
-    pts.push([Math.cos(a) * radius, 0, Math.sin(a) * radius])
-  }
-  return pts
-}
-
-const RING_PTS = makeRing(2.8, 48)
-
-// Simple 3D rotation and projection
-function rotateY(v: [number, number, number], a: number): [number, number, number] {
-  const c = Math.cos(a), s = Math.sin(a)
-  return [v[0] * c + v[2] * s, v[1], -v[0] * s + v[2] * c]
-}
-
-function rotateX(v: [number, number, number], a: number): [number, number, number] {
-  const c = Math.cos(a), s = Math.sin(a)
-  return [v[0], v[1] * c - v[2] * s, v[1] * s + v[2] * c]
-}
-
-function project(v: [number, number, number], w: number, h: number, fov: number, offsetX: number, offsetY: number): [number, number] {
-  const d = fov / (fov + v[2])
-  return [v[0] * d + w / 2 + offsetX, v[1] * d + h / 2 + offsetY]
-}
 
 export function Hero3D() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -70,110 +63,342 @@ export function Hero3D() {
     let animId: number
     let isVisible = true
 
-    // Resize handler
-    const resize = () => {
-      const parent = canvas.parentElement
-      if (!parent) return
-      const dpr = Math.min(window.devicePixelRatio, 2)
-      canvas.width = parent.clientWidth * dpr
-      canvas.height = parent.clientHeight * dpr
-      canvas.style.width = parent.clientWidth + 'px'
-      canvas.style.height = parent.clientHeight + 'px'
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    }
-    resize()
-    window.addEventListener('resize', resize)
+    // Synchronize internal canvas resolution with its CSS bounding box
+    const updateSize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const rect = canvas.getBoundingClientRect()
+      const w = Math.round(rect.width) || 260
+      const h = Math.round(rect.height) || 260
 
-    // Pause when offscreen
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting
-      if (isVisible) animId = requestAnimationFrame(draw)
-    }, { rootMargin: '100px' })
+      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+        canvas.width = w * dpr
+        canvas.height = h * dpr
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      }
+      return { w, h, dpr }
+    }
+
+    updateSize()
+    window.addEventListener('resize', updateSize)
+
+    // ResizeObserver ensures canvas resolution updates instantly when CSS width/height changes
+    const resizeObserver = new ResizeObserver(() => {
+      updateSize()
+    })
+    resizeObserver.observe(canvas)
+
+    // Pause when offscreen to preserve memory & CPU
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+        if (isVisible) {
+          animId = requestAnimationFrame(draw)
+        }
+      },
+      { rootMargin: '100px' }
+    )
     observer.observe(canvas)
 
-    const scale = 38 // px per unit
-    const fov = 12
+    let lastTime = 0
+    const tiltX = 0.38 // ~22 degrees axial tilt
+    const tiltZ = -0.15 // slight aesthetic roll
+    const camDist = 600 // Camera distance for perspective projection
 
-    let lastFrame = 0
     const draw = (t: number) => {
       if (!isVisible) return
-      // Cap at ~30fps
-      if (t - lastFrame < 33) {
+
+      if (t - lastTime < 24) {
         animId = requestAnimationFrame(draw)
         return
       }
-      lastFrame = t
+      lastTime = t
 
-      const w = canvas.clientWidth
-      const h = canvas.clientHeight
-      const offsetX = w * 0.12
-      const offsetY = h * 0.05
-      const time = t * 0.001
+      // Ensure canvas resolution stays in sync with CSS box
+      const { w, h } = updateSize()
+      const cx = w / 2
+      const cy = h / 2
+
+      // Globe radius sized so satellites orbit comfortably inside the canvas box without clipping
+      const radius = Math.min(w, h) * 0.28
 
       ctx.clearRect(0, 0, w, h)
 
-      const ry = time * 0.15
-      const rx = time * 0.1
-      const bobY = Math.sin(time) * 0.2
+      const time = t * 0.001
+      const rotY = time * 0.35 // rotation around polar axis
+      const bobY = Math.sin(time * 0.8) * 3 // gentle floating bob
 
-      // Transform a vertex: rotate then offset
-      const xform = (v: [number, number, number]): [number, number, number] => {
-        let p = rotateY(v, ry)
-        p = rotateX(p, rx)
-        return [p[0], p[1] + bobY, p[2]]
+      // 3D Point projection for surface points
+      const projectPoint = (latDeg: number, lonDeg: number): { x: number; y: number; z: number } => {
+        const lat = (latDeg * Math.PI) / 180
+        const lon = (lonDeg * Math.PI) / 180
+
+        const x0 = radius * Math.cos(lat) * Math.sin(lon)
+        const y0 = radius * Math.sin(lat)
+        const z0 = radius * Math.cos(lat) * Math.cos(lon)
+
+        // Rotate around Y axis
+        const x1 = x0 * Math.cos(rotY) + z0 * Math.sin(rotY)
+        const y1 = y0
+        const z1 = -x0 * Math.sin(rotY) + z0 * Math.cos(rotY)
+
+        // Axial tilt
+        const x2 = x1 * Math.cos(tiltZ) - y1 * Math.sin(tiltZ)
+        const y2_temp = x1 * Math.sin(tiltZ) + y1 * Math.cos(tiltZ)
+
+        const y2 = y2_temp * Math.cos(tiltX) - z1 * Math.sin(tiltX)
+        const z2 = y2_temp * Math.sin(tiltX) + z1 * Math.cos(tiltX)
+
+        const d = camDist / (camDist - z2)
+        return {
+          x: cx + x2 * d,
+          y: cy - (y2 + bobY) * d,
+          z: z2,
+        }
       }
 
-      const transformed = VERTS.map(xform)
+      // 3D Point projection for arbitrary coordinates (used for satellites)
+      const projectCoord = (x: number, y: number, z: number): { x: number; y: number; z: number } => {
+        const x2 = x * Math.cos(tiltZ) - y * Math.sin(tiltZ)
+        const y2_temp = x * Math.sin(tiltZ) + y * Math.cos(tiltZ)
 
-      // Draw wireframe icosahedron
-      ctx.strokeStyle = 'rgba(126, 184, 247, 0.12)'
-      ctx.lineWidth = 0.8
-      ctx.beginPath()
-      for (const [a, b] of EDGES) {
-        const pa = project(transformed[a], 0, 0, fov * scale, w / 2 + offsetX, h / 2 + offsetY)
-        const pb = project(transformed[b], 0, 0, fov * scale, w / 2 + offsetX, h / 2 + offsetY)
-        ctx.moveTo(pa[0], pa[1])
-        ctx.lineTo(pb[0], pb[1])
+        const y2 = y2_temp * Math.cos(tiltX) - z * Math.sin(tiltX)
+        const z2 = y2_temp * Math.sin(tiltX) + z * Math.cos(tiltX)
+
+        const d = camDist / (camDist - z2)
+        return {
+          x: cx + x2 * d,
+          y: cy - (y2 + bobY) * d,
+          z: z2,
+        }
       }
-      ctx.stroke()
 
-      // Draw orbit rings
-      const ringTilt = Math.PI / 3
-      const drawRing = (color: string, extraRotY: number) => {
-        ctx.strokeStyle = color
-        ctx.lineWidth = 1
+      // Calculate satellite 3D coordinates
+      const satPositions = SATELLITES.map((sat) => {
+        const orbitR = radius * sat.orbitRadiusFactor
+        const angle = time * sat.speed + sat.initialPhase
+
+        // Point on orbital circle
+        const ox = orbitR * Math.cos(angle)
+        const oz = orbitR * Math.sin(angle)
+        const oy = 0
+
+        // Incline orbit
+        const ox1 = ox
+        const oy1 = -oz * Math.sin(sat.inclination)
+        const oz1 = oz * Math.cos(sat.inclination)
+
+        // Rotate longitude of ascending node (raan)
+        const ox2 = ox1 * Math.cos(sat.raan) + oz1 * Math.sin(sat.raan)
+        const oy2 = oy1
+        const oz2 = -ox1 * Math.sin(sat.raan) + oz1 * Math.cos(sat.raan)
+
+        const proj = projectCoord(ox2, oy2, oz2)
+
+        // Check if satellite is occulted behind the solid globe
+        const distFromCenter = Math.hypot(proj.x - cx, proj.y - (cy - bobY))
+        const isBehindGlobe = proj.z < 0 && distFromCenter < radius * 0.98
+
+        return { sat, proj, isBehindGlobe }
+      })
+
+      // Helper to draw orbital trajectory paths
+      const drawOrbitTrack = (sat: SatelliteConfig, drawFront: boolean) => {
+        const orbitR = radius * sat.orbitRadiusFactor
         ctx.beginPath()
         let started = false
-        for (const pt of RING_PTS) {
-          // Tilt around X, then rotate with mesh, then extra rotation
-          let p = rotateX(pt, ringTilt)
-          p = rotateY(p, ry + extraRotY)
-          p = rotateX(p, rx)
-          p = [p[0], p[1] + bobY, p[2]]
-          const proj = project(p, 0, 0, fov * scale, w / 2 + offsetX, h / 2 + offsetY)
-          if (!started) {
-            ctx.moveTo(proj[0], proj[1])
-            started = true
+
+        for (let a = 0; a <= 360; a += 5) {
+          const rad = (a * Math.PI) / 180
+          const ox = orbitR * Math.cos(rad)
+          const oz = orbitR * Math.sin(rad)
+
+          const ox1 = ox
+          const oy1 = -oz * Math.sin(sat.inclination)
+          const oz1 = oz * Math.cos(sat.inclination)
+
+          const ox2 = ox1 * Math.cos(sat.raan) + oz1 * Math.sin(sat.raan)
+          const oy2 = oy1
+          const oz2 = -ox1 * Math.sin(sat.raan) + oz1 * Math.cos(sat.raan)
+
+          const p = projectCoord(ox2, oy2, oz2)
+
+          const isSegmentFront = p.z > 0
+          if (isSegmentFront === drawFront) {
+            if (!started) {
+              ctx.moveTo(p.x, p.y)
+              started = true
+            } else {
+              ctx.lineTo(p.x, p.y)
+            }
           } else {
-            ctx.lineTo(proj[0], proj[1])
+            started = false
           }
         }
         ctx.stroke()
       }
 
-      drawRing('rgba(56, 189, 248, 0.35)', 0)
-      drawRing('rgba(167, 139, 250, 0.35)', Math.PI / 2)
+      // Helper to draw a satellite beacon
+      const drawSatBeacon = (s: typeof satPositions[0], opacity: number) => {
+        const { sat, proj } = s
+        ctx.save()
+        ctx.globalAlpha = opacity
 
-      // Draw subtle core glow
-      const center = project(xform([0, 0, 0]), 0, 0, fov * scale, w / 2 + offsetX, h / 2 + offsetY)
-      const grad = ctx.createRadialGradient(center[0], center[1], 0, center[0], center[1], 45)
-      grad.addColorStop(0, 'rgba(10, 25, 47, 0.6)')
-      grad.addColorStop(0.5, 'rgba(10, 25, 47, 0.2)')
-      grad.addColorStop(1, 'transparent')
-      ctx.fillStyle = grad
+        // Small soft beacon halo
+        const halo = ctx.createRadialGradient(proj.x, proj.y, 0, proj.x, proj.y, sat.size * 3.5)
+        halo.addColorStop(0, sat.color)
+        halo.addColorStop(1, 'transparent')
+        ctx.fillStyle = halo
+        ctx.beginPath()
+        ctx.arc(proj.x, proj.y, sat.size * 3.5, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Satellite core dot
+        ctx.fillStyle = '#ffffff'
+        ctx.beginPath()
+        ctx.arc(proj.x, proj.y, sat.size * 0.75, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Solar panel wings
+        ctx.strokeStyle = sat.color
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.moveTo(proj.x - sat.size * 2, proj.y)
+        ctx.lineTo(proj.x + sat.size * 2, proj.y)
+        ctx.stroke()
+
+        ctx.restore()
+      }
+
+      // --- 1. BACK ORBIT TRACKS ---
+      ctx.strokeStyle = 'rgba(126, 184, 247, 0.08)'
+      ctx.lineWidth = 0.7
+      for (const sat of SATELLITES) {
+        drawOrbitTrack(sat, false)
+      }
+
+      // --- 2. BACK SATELLITES (z < 0) ---
+      for (const s of satPositions) {
+        if (s.proj.z < 0 && !s.isBehindGlobe) {
+          drawSatBeacon(s, 0.45)
+        }
+      }
+
+      // --- 3. BACK GLOBE LINES (z <= 0) ---
+      ctx.strokeStyle = 'rgba(126, 184, 247, 0.1)'
+      ctx.lineWidth = 0.8
+
+      for (const lat of LATS) {
+        ctx.beginPath()
+        let started = false
+        for (let l = 0; l <= 360; l += 6) {
+          const pt = projectPoint(lat, l)
+          if (pt.z <= 0) {
+            if (!started) {
+              ctx.moveTo(pt.x, pt.y)
+              started = true
+            } else {
+              ctx.lineTo(pt.x, pt.y)
+            }
+          } else {
+            started = false
+          }
+        }
+        ctx.stroke()
+      }
+
+      for (const lon of LONS) {
+        ctx.beginPath()
+        let started = false
+        for (let l = -90; l <= 90; l += 5) {
+          const pt = projectPoint(l, lon)
+          if (pt.z <= 0) {
+            if (!started) {
+              ctx.moveTo(pt.x, pt.y)
+              started = true
+            } else {
+              ctx.lineTo(pt.x, pt.y)
+            }
+          } else {
+            started = false
+          }
+        }
+        ctx.stroke()
+      }
+
+      // --- 4. CELESTIAL BODY DEPTH MASK ---
+      const coreGrad = ctx.createRadialGradient(cx, cy - bobY, 0, cx, cy - bobY, radius)
+      coreGrad.addColorStop(0, 'rgba(8, 16, 36, 0.75)')
+      coreGrad.addColorStop(0.7, 'rgba(4, 10, 24, 0.65)')
+      coreGrad.addColorStop(1, 'rgba(126, 184, 247, 0.05)')
+      ctx.fillStyle = coreGrad
       ctx.beginPath()
-      ctx.arc(center[0], center[1], 45, 0, Math.PI * 2)
+      ctx.arc(cx, cy - bobY, radius * 0.98, 0, Math.PI * 2)
       ctx.fill()
+
+      // --- 5. FRONT GLOBE LINES (z > 0) ---
+      for (const lat of LATS) {
+        const isEquator = lat === 0
+        ctx.strokeStyle = isEquator ? 'rgba(126, 184, 247, 0.45)' : 'rgba(126, 184, 247, 0.28)'
+        ctx.lineWidth = isEquator ? 1.2 : 0.9
+        ctx.beginPath()
+        let started = false
+        for (let l = 0; l <= 360; l += 5) {
+          const pt = projectPoint(lat, l)
+          if (pt.z > 0) {
+            if (!started) {
+              ctx.moveTo(pt.x, pt.y)
+              started = true
+            } else {
+              ctx.lineTo(pt.x, pt.y)
+            }
+          } else {
+            started = false
+          }
+        }
+        ctx.stroke()
+      }
+
+      ctx.strokeStyle = 'rgba(126, 184, 247, 0.28)'
+      ctx.lineWidth = 0.9
+      for (const lon of LONS) {
+        ctx.beginPath()
+        let started = false
+        for (let l = -90; l <= 90; l += 4) {
+          const pt = projectPoint(l, lon)
+          if (pt.z > 0) {
+            if (!started) {
+              ctx.moveTo(pt.x, pt.y)
+              started = true
+            } else {
+              ctx.lineTo(pt.x, pt.y)
+            }
+          } else {
+            started = false
+          }
+        }
+        ctx.stroke()
+      }
+
+      // Outer rim outline
+      ctx.strokeStyle = 'rgba(126, 184, 247, 0.35)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.arc(cx, cy - bobY, radius, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // --- 6. FRONT ORBIT TRACKS ---
+      ctx.strokeStyle = 'rgba(126, 184, 247, 0.2)'
+      ctx.lineWidth = 0.8
+      for (const sat of SATELLITES) {
+        drawOrbitTrack(sat, true)
+      }
+
+      // --- 7. FRONT SATELLITES (z >= 0) ---
+      for (const s of satPositions) {
+        if (s.proj.z >= 0) {
+          drawSatBeacon(s, 0.95)
+        }
+      }
 
       animId = requestAnimationFrame(draw)
     }
@@ -182,23 +407,22 @@ export function Hero3D() {
 
     return () => {
       cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', updateSize)
+      resizeObserver.disconnect()
       observer.disconnect()
     }
   }, [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: 'absolute',
-        top: '5%',
-        right: '0%',
-        width: '45%',
-        height: '80%',
-        zIndex: -1,
-        pointerEvents: 'none',
-      }}
-    />
+    <div className="hero-globe-wrap">
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'block',
+        }}
+      />
+    </div>
   )
 }

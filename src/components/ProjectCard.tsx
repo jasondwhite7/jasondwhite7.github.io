@@ -12,7 +12,7 @@ export function ProjectCard({ project, onClick }: Props) {
     <div className="project-card reveal" onClick={onClick}>
       <div className="project-card-inner">
         <div className="project-thumbnail">
-          <Carousel images={project.images} isThumbnail={true} />
+          <Carousel images={project.images} />
         </div>
         <div className="project-thumb-overlay">
           <span>↗</span> View Project

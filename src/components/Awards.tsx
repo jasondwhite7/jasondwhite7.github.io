@@ -23,12 +23,12 @@ export function Awards() {
           <p className="award-org">Ohio Senate · 2025</p>
         </div>
         <div className="award-card reveal">
-          <p className="award-title">3rd Place (200+ Teams)</p>
-          <p className="award-org">Central Ohio Bridge Building · 2025</p>
+          <p className="award-title">3rd Place (200+ teams)</p>
+          <p className="award-org">Central Ohio Miniature Bridge Building Competition · 2025</p>
         </div>
         <div className="award-card reveal">
-          <p className="award-title">Commended Scholar</p>
-          <p className="award-org">NMSC · 2024</p>
+          <p className="award-title">National Merit Commended Scholar</p>
+          <p className="award-org">National Merit Scholarship Corporation · 2024</p>
         </div>
       </div>
     </section>

@@ -24,14 +24,14 @@ export function Skills() {
           <div className="skill-list">
             <span className="skill-pill">Unity</span>
             <span className="skill-pill">React</span>
-            <span className="skill-pill">Arduino</span>
             <span className="skill-pill">VS Code</span>
-            <span className="skill-pill">HoloLens 2</span>
             <span className="skill-pill">GitHub</span>
-            <span className="skill-pill">Adobe Premiere</span>
-            <span className="skill-pill">QLab</span>
-            <span className="skill-pill">Lightkey</span>
+            <span className="skill-pill">Arduino</span>
+            <span className="skill-pill">HoloLens 2</span>
+            <span className="skill-pill">NX</span>
+            <span className="skill-pill">Adobe Premiere Pro</span>
             <span className="skill-pill">Microsoft Office</span>
+
           </div>
         </div>
         <div className="skill-group reveal">
@@ -39,10 +39,11 @@ export function Skills() {
           <div className="skill-list">
             <span className="skill-pill">Data Analysis</span>
             <span className="skill-pill">Public Speaking</span>
-            <span className="skill-pill">Technical Proposals</span>
+            <span className="skill-pill">Technical Presentations</span>
+            <span className="skill-pill">Technical Writing</span>
+            <span className="skill-pill">Filming</span>
             <span className="skill-pill">Video Editing</span>
             <span className="skill-pill">Research</span>
-            <span className="skill-pill">Team Leadership</span>
           </div>
         </div>
       </div>

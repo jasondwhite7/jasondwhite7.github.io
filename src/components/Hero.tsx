@@ -5,22 +5,18 @@ export function Hero() {
   return (
     <div id="hero-section" style={{ position: 'relative' }}>
       <Hero3D />
-      <div id="hero" style={{ pointerEvents: 'none' }}>
-        <p className="hero-eyebrow">Aerospace Engineering · Purdue University</p>
+      <div id="hero" style={{ pointerEvents: 'none', position: 'relative', zIndex: 1 }}>
         <h1>
-          <span className="first">Jason D.</span>
-          <span className="last">White</span>
+          <span className="first">Jason</span><span className="last">White</span>
         </h1>
-        <p className="hero-sub" style={{ pointerEvents: 'auto' }}>
-          Building interfaces and systems for <span>space operations</span>. Sophomore. 3.97
-          GPA. Already presenting at Johnson Space Center.
-        </p>
-        <div className="hero-badges" style={{ pointerEvents: 'auto' }}>
-          <span className="badge highlight">NASA SUITS · JSC 2026</span>
-          <span className="badge highlight">NASA ADC · JSC 2025</span>
-          <span className="badge">SEARCH @ Purdue</span>
-          <span className="badge">Dean's List</span>
-          <span className="badge">Software Lead '26–'27</span>
+        <div className="hero-sub" style={{ pointerEvents: 'auto' }}>
+          <p>
+            Hi, I'm Jason! I'm a sophomore studying aerospace engineering at Purdue University.
+          </p>
+          <p>
+            I design and build systems and software for <span>space exploration. </span>
+            Two-time NASA student design challenge finalist with work presented at NASA Johnson Space Center.
+          </p>
         </div>
         <div className="hero-cta" style={{ pointerEvents: 'auto' }}>
           <a href="#projects" className="btn btn-primary">
@@ -33,10 +29,11 @@ export function Hero() {
             Get in Touch
           </a>
         </div>
-      </div>
-      <div className="scroll-indicator">
-        <div className="scroll-line"></div>
-        <span>Scroll</span>
+        <div className="hero-details" style={{ pointerEvents: 'auto' }}>
+          <span>GPA: <span className="highlight">3.97</span></span>
+          <span className="dot">•</span>
+          <span>Expected Graduation: <span className="highlight">Dec, 2028</span></span>
+        </div>
       </div>
     </div>
   )

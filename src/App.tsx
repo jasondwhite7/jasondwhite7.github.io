@@ -1,5 +1,4 @@
 import React from 'react'
-import { Cursor } from './components/Cursor'
 import { Background } from './components/Background'
 import { Nav } from './components/Nav'
 import { Hero } from './components/Hero'
@@ -11,26 +10,21 @@ import { Awards } from './components/Awards'
 import { Skills } from './components/Skills'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
-import { useScrollReveal } from './hooks/useScrollReveal'
 
 function App() {
-  // Initialize the scroll reveal IntersectionObserver once on mount
-  useScrollReveal()
-
   return (
     <>
-      <Cursor />
       <Background />
       
       <div className="content">
         <Nav />
         <Hero />
         <Divider />
+        <Projects />
+        <Divider />
         <About />
         <Divider />
         <Experience />
-        <Divider />
-        <Projects />
         <Divider />
         <Awards />
         <Divider />

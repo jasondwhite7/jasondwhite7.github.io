@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-export function Carousel({ images, inModal = false, isThumbnail = false }: { images: string[], inModal?: boolean, isThumbnail?: boolean }) {
+export function Carousel({ images, inModal = false }: { images: string[], inModal?: boolean }) {
   const [index, setIndex] = useState(0)
+
+  // Filter out invalid or placeholder paths like '/'
+  const validImages = (images || []).filter((src) => src && src.trim() !== '' && src !== '/')
 
   // Reset index when images prop changes (useful for modals)
   useEffect(() => {
@@ -9,13 +12,13 @@ export function Carousel({ images, inModal = false, isThumbnail = false }: { ima
   }, [images])
 
   const slide = (dir: number) => {
-    if (images.length === 0) return
-    setIndex((prev) => (prev + dir + images.length) % images.length)
+    if (validImages.length === 0) return
+    setIndex((prev) => (prev + dir + validImages.length) % validImages.length)
   }
 
   const goTo = (i: number) => setIndex(i)
 
-  // Arrow key support specifically for modal overlay (can be added here or in Modal.tsx, but here is localized)
+  // Arrow key support specifically for modal overlay
   useEffect(() => {
     if (!inModal) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -24,28 +27,30 @@ export function Carousel({ images, inModal = false, isThumbnail = false }: { ima
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [inModal, images.length])
+  }, [inModal, validImages.length])
+
+  if (validImages.length === 0) {
+    return (
+      <div className="carousel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface)', color: 'var(--muted)' }}>
+        <span style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>Image coming soon</span>
+      </div>
+    )
+  }
 
   return (
     <div className="carousel">
-      {images.map((src, i) => {
-        const targetSrc = isThumbnail ? src.replace('.jpg', '-thumb.jpg') : src;
+      {validImages.map((src, i) => {
         return (
           <img
             key={`${src}-${i}`}
             className={`carousel-img ${i === index ? 'active' : ''}`}
-            src={targetSrc}
-            onError={(e) => {
-              if (isThumbnail && e.currentTarget.src !== window.location.origin + src) {
-                e.currentTarget.src = src;
-              }
-            }}
+            src={src}
             alt={`Image ${i + 1}`}
             loading="lazy"
           />
         )
       })}
-      {images.length > 1 && (
+      {validImages.length > 1 && (
         <>
           <button
             className="carousel-btn prev"
@@ -66,7 +71,7 @@ export function Carousel({ images, inModal = false, isThumbnail = false }: { ima
             ›
           </button>
           <div className="carousel-dots">
-            {images.map((_, i) => (
+            {validImages.map((_, i) => (
               <div
                 key={i}
                 className={`carousel-dot ${i === index ? 'active' : ''}`}
