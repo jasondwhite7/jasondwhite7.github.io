@@ -156,8 +156,8 @@ nav {
   min-height: calc(100vh - 130px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 110px 60px 24px 60px;
+  justify-content: flex-start;
+  padding: 170px 60px 24px 60px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -191,7 +191,7 @@ h1 .last {
 .hero-sub {
   font-size: 1.1rem;
   color: var(--muted);
-  max-width: 690px;
+  max-width: 760px;
   line-height: 1.7;
   margin-bottom: 36px;
 }
@@ -863,15 +863,15 @@ footer p {
   position: absolute;
   
   /* VERTICAL (UP / DOWN): Adjust 'top' (e.g. 50%, 40%, 200px) */
-  top: 35%;
+  top: 40%;
   transform: translateY(-50%);
 
   /* HORIZONTAL (LEFT / RIGHT): Adjust 'right' (or replace with 'left: 60%') */
   right: 5%;
 
   /* SIZE: Change width and height together to size the whole globe */
-  width: 360px;
-  height: 360px;
+  width: 400px;
+  height: 400px;
 
   pointer-events: none;
   z-index: 0;
